@@ -1,0 +1,22 @@
+<script type="text/javascript">
+	window.threadViewerConfig = {
+		"rootPath" : "${rootPath}" 
+	};
+</script>
+
+<style>
+#threadlist { list-style-type: none; margin: 0; padding: 0; width: 35%; float: left}
+#threadlist .ui-selecting { background: #FECA40; }
+#threadlist .ui-selected { background: #F39814; color: white; }
+#threadlist li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; cursor: pointer}
+
+#cnt-stacktrace {float: right; width: 60%;}
+</style>
+
+<script type="text/javascript" src="${rootPath}/underscore-min.js"></script>
+<script type="text/javascript" src="${rootPath}/backbone.js"></script>
+<script type="text/javascript" src="${rootPath}/world.js"></script>
+
+<div id="cnt-thread-list"></div>
+
+<div id="cnt-stacktrace"></div>

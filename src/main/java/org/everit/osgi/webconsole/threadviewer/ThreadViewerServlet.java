@@ -1,34 +1,46 @@
 package org.everit.osgi.webconsole.threadviewer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.felix.webconsole.AbstractWebConsolePlugin;
+import org.json.JSONWriter;
 
 public class ThreadViewerServlet extends AbstractWebConsolePlugin {
     private static final long serialVersionUID = -433422756955420082L;
 
-    // @Override
-    // protected String[] getCssReferences() {
-    // return new String[] { "/thread-viewer/hello/world.css" };
-    // }
+    public static final String THREADS_LABEL = "threads";
+
+    private static final Set<String> loadableJavascriptFiles = new HashSet<String>(Arrays.asList(
+            "world.js",
+            "backbone.js",
+            "underscore-min.js"
+            ));
 
     @Override
     public String getLabel() {
-        return "threads";
+        return THREADS_LABEL;
     }
 
     public URL getResource(final String path) {
-        System.out.println(path);
-        if (path.indexOf("hello/world.js") != -1) {
-            URL rval = getResourceProvider().getClass().getResource("/res/hello/world.js");
-            System.out.println("returning " + rval);
-            return rval;
+        System.out.println("checking if resource: " + path);
+        for (String jsFile : loadableJavascriptFiles) {
+            if (path.endsWith(jsFile)) {
+                System.out.println("found: " + jsFile);
+                return getResourceProvider().getClass().getResource("/everit/webconsole/threadviewer/js/" + jsFile);
+            }
         }
         return null;
     }
@@ -39,12 +51,75 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
     }
 
     @Override
+    protected boolean isHtmlRequest(final HttpServletRequest request) {
+        return request.getHeader("Accept").indexOf("application/json") == -1;
+    }
+
+    private String loadTemplate(final String path, final Map<String, String> templateVars) {
+        try {
+            InputStream inputStream = getResourceProvider().getClass().getResourceAsStream(path);
+            BufferedReader buffInputStream = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            StringBuilder buffer = new StringBuilder();
+            while ((line = buffInputStream.readLine()) != null) {
+                buffer.append(line);
+            }
+            String rval = buffer.toString();
+            return resolveVariables(rval, templateVars);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     protected void renderContent(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException,
             IOException {
-        Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
-        response.getWriter().println("hello world");
-        response.getWriter().println("<script src=\"/system/console/threads/hello/world.js\"></script>");
+        String pathInfo = request.getPathInfo();
+        if (pathInfo.equals("/" + THREADS_LABEL)) {
+            Map<String, String> templateVars = new HashMap<String, String>(1);
+            templateVars.put("rootPath", request.getAttribute("felix.webconsole.pluginRoot").toString());
+            Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+            response.getWriter().println(loadTemplate("/everit/webconsole/threadviewer/template.html", templateVars));
+        } else if (pathInfo.endsWith("listthreads")) {
+            response.setHeader("Content-Type", "application/json");
+            Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+            JSONWriter writer = new JSONWriter(response.getWriter());
+            writer.array();
+            for (Thread thread : stackTraces.keySet()) {
+                writer.object();
+                writer.key("name");
+                writer.value(thread.getName());
+                writer.key("state");
+                writer.value(thread.getState().toString());
+                writeStackTraceToJSON(writer, stackTraces.get(thread));
+                writer.endObject();
+            }
+            writer.endArray();
+        }
     }
 
+    private String resolveVariables(String rval, final Map<String, String> templateVars) {
+        for (String var : templateVars.keySet()) {
+            String value = templateVars.get(var);
+            rval = rval.replaceAll("\\$\\{" + var + "\\}", value);
+        }
+        return rval;
+    }
+
+    private void writeStackTraceToJSON(final JSONWriter writer, final StackTraceElement[] stackTrace) {
+        writer.key("stackTrace");
+        writer.array();
+        for (StackTraceElement method : stackTrace) {
+            writer.object();
+            writer.key("className");
+            writer.value(method.getClassName());
+            writer.key("methodName");
+            writer.value(method.getMethodName());
+            writer.key("lineNumber");
+            writer.value(method.getLineNumber());
+            writer.endObject();
+        }
+        writer.endArray();
+    }
 }

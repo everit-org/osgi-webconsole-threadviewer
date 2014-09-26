@@ -13,7 +13,7 @@ public class ThreadViewerActivator implements BundleActivator {
     @Override
     public void start(final BundleContext context) throws Exception {
         Dictionary<String, String> props = new Hashtable<String, String>(2);
-        props.put("felix.webconsole.label", "threads");
+        props.put("felix.webconsole.label", ThreadViewerServlet.THREADS_LABEL);
         context.registerService(Servlet.class, new ThreadViewerServlet(), props);
     }
 

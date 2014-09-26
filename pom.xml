@@ -77,6 +77,12 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.org.json</artifactId>
+      <version>1.0.0-v20140107</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.7</version>
