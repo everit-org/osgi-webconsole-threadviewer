@@ -20,3 +20,25 @@
 <div id="cnt-thread-list"></div>
 
 <div id="cnt-stacktrace"></div>
+
+
+<script type="text/template" id="tmpl-stacktrace">
+	<table>
+		<thead>
+			<tr>
+				<th>Class</th>
+				<th>Method</th>
+				<th>Line</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% _.each(stackTrace, function(entry) { %>
+			<tr>
+				<td><%= entry.className %></td>
+				<td><%= entry.methodName %></td>
+				<td><%= entry.lineNumber %></td>
+			</tr>
+			<% }); %>
+		</tbody>
+	</table>
+</script>

@@ -11,6 +11,15 @@ $(document).ready(function() {
 	});
 	
 	var Thread = Backbone.Model.extend({
+		initialize: function(options) {
+			if (options.stackTrace) {
+				var stackTraceModels = [];
+				for (var i in options.stackTrace) {
+					stackTraceModels.push(new StackTraceEntry(options.stackTrace[i]));
+				}
+				this.stackTrace.reset(stackTraceModels);
+			}
+		},
 		name : "unknown",
 		state : "unknown",
 		selected : false,
@@ -33,8 +42,9 @@ $(document).ready(function() {
 				var curr = this.get("selectedThread");
 				if (curr != null) {
 					curr.set("selected", true);
+					console.log(curr.get("stackTrace"));
 				}
-			})
+			});
 		}
 	});
 	
@@ -102,6 +112,12 @@ $(document).ready(function() {
 					.append(": ")
 					.append(thread.get("state"))
 				.appendTo(this.$el);
+				var table = _.template($("#tmpl-stacktrace").text())({
+					varname : "asd",
+					stackTrace: thread.get("stackTrace")
+				});
+				//console.log(table)
+				this.$el.append(table);
 			}
 			return this.$el;
 		}
