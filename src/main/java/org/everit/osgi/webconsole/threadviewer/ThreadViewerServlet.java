@@ -24,6 +24,8 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
     public static final String THREADS_LABEL = "threads";
 
     private static final Set<String> loadableJavascriptFiles = new HashSet<String>(Arrays.asList(
+            "app/models.js",
+            "app/views.js",
             "threadviewer.js",
             "backbone.js",
             "underscore-min.js"
