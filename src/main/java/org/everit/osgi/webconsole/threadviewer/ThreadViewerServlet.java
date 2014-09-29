@@ -24,7 +24,7 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
     public static final String THREADS_LABEL = "threads";
 
     private static final Set<String> loadableJavascriptFiles = new HashSet<String>(Arrays.asList(
-            "world.js",
+            "threadviewer.js",
             "backbone.js",
             "underscore-min.js"
             ));
@@ -35,10 +35,8 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
     }
 
     public URL getResource(final String path) {
-        System.out.println("checking if resource: " + path);
         for (String jsFile : loadableJavascriptFiles) {
             if (path.endsWith(jsFile)) {
-                System.out.println("found: " + jsFile);
                 return getResourceProvider().getClass().getResource("/everit/webconsole/threadviewer/js/" + jsFile);
             }
         }
@@ -79,7 +77,6 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
         if (pathInfo.equals("/" + THREADS_LABEL)) {
             Map<String, String> templateVars = new HashMap<String, String>(1);
             templateVars.put("rootPath", request.getAttribute("felix.webconsole.pluginRoot").toString());
-            Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
             response.getWriter().println(loadTemplate("/everit/webconsole/threadviewer/template.html", templateVars));
         } else if (pathInfo.endsWith("listthreads")) {
             response.setHeader("Content-Type", "application/json");

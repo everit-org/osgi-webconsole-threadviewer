@@ -29,10 +29,12 @@ $(document).ready(function() {
 	var ApplicationModel = Backbone.Model.extend({
 		threadList : null,
 		selectedThread : null,
+		threadStateSummary : "",
 		initialize : function() {
 			var self = this;
 			threadList.on("reset", function() {
 				self.set("selectedThread", null);
+				self.set("threadStateSummary", "Summary: " + self.get("threadList").length + " threads");
 			});
 			this.on("change:selectedThread", function(e) {
 				var prev = this.previous("selectedThread");
@@ -78,7 +80,6 @@ $(document).ready(function() {
 	});
 	
 	var ThreadListView = Backbone.View.extend({
-		tagName : "ol",
 		initialize : function(options) {
 			this.appModel = options.appModel;
 			this.listenTo(this.model, "reset", this.render);
@@ -86,14 +87,16 @@ $(document).ready(function() {
 		appModel : null,
 		render : function() {
 			this.$el.empty();
-			var self = this;
-			this.model.forEach(function(entry) {
-				self.$el.append(new ThreadView({
-					model : entry,
-					appModel : self.appModel
-				}).render());
+			var table = _.template($("#tmpl-thread-list").text())({
+				threads: this.model
 			});
-			return this.$el;
+			var $table = $(table).tablesorter();
+			var rows = $table.find("tr");
+			for (var idx in rows) {
+				var rowClass = idx % 2 ? "even" : "odd";
+				$(rows[idx]).addClass(rowClass);
+			}
+			return this.$el.append($table);
 		}
 	
 	});
@@ -113,13 +116,20 @@ $(document).ready(function() {
 					.append(thread.get("state"))
 				.appendTo(this.$el);
 				var table = _.template($("#tmpl-stacktrace").text())({
-					varname : "asd",
 					stackTrace: thread.get("stackTrace")
 				});
-				//console.log(table)
 				this.$el.append(table);
 			}
 			return this.$el;
+		}
+	});
+	
+	var SummaryView = Backbone.View.extend({
+		initialize: function() {
+			this.listenTo(this.model, "change:threadStateSummary", this.render);
+		},
+		render: function() {
+			this.$el.text(this.model.get("threadStateSummary"));
 		}
 	});
 	
@@ -131,17 +141,19 @@ $(document).ready(function() {
 	
 	var threadListView = new ThreadListView({
 		model : threadList,
-		appModel : appModel,
-		id : "threadlist"
+		appModel : appModel
 	});
 	
 	var stackTraceView = new StackTraceView({
 		appModel : appModel
 	});
 	
-	$("#cnt-thread-list").append(threadListView.render());
+	var summaryView = new SummaryView({
+		model: appModel,
+		el: $("p.statline").get(0)
+	});
 	
-	$("#cnt-stacktrace").append(stackTraceView.render());
+	$("#cnt-thread-list").append(threadListView.render());
 	
 	$.getJSON(window.threadViewerConfig.rootPath + "/listthreads", function(threadDefinitions) {
 		var newThreads = [];

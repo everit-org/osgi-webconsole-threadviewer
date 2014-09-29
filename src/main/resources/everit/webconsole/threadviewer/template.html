@@ -5,22 +5,54 @@
 </script>
 
 <style>
-#threadlist { list-style-type: none; margin: 0; padding: 0; width: 35%; float: left}
-#threadlist .ui-selecting { background: #FECA40; }
-#threadlist .ui-selected { background: #F39814; color: white; }
-#threadlist li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; cursor: pointer}
-
-#cnt-stacktrace {float: right; width: 60%;}
+.tablesorter {
+	width: 100%
+}
+.tablesorter td.thread-name {
+	padding-left: 10px
+}
+.tablesorter td.thread-name div.thread-name {
+	cursor: pointer
+}
 </style>
+
 
 <script type="text/javascript" src="${rootPath}/underscore-min.js"></script>
 <script type="text/javascript" src="${rootPath}/backbone.js"></script>
-<script type="text/javascript" src="${rootPath}/world.js"></script>
+<script type="text/javascript" src="${rootPath}/threadviewer.js"></script>
+
+<p class="statline ui-state-highlight"></p>
 
 <div id="cnt-thread-list"></div>
 
-<div id="cnt-stacktrace"></div>
-
+<script type="text/template" id="tmpl-thread-list">
+	<table class="tablesorter">
+		<thead>
+			<tr>
+				<th class="ui-widget-header header">Thread Name</th>
+				<th class="ui-widget-header header">State</th>
+				<th class="ui-widget-header header">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% threads.forEach(function(thr) { %>
+			<tr class="ui-state-default">
+				<td class="thread-name">
+					<div class="thread-name"><%= thr.get("name") %></div>
+				</td>
+				<td><%= thr.get("state") %></td>
+				<td>
+					<ul class="icons ui-widgets">
+						<li class="dynhover ui-state-default ui-corner-all" title="Interrupt">
+							<span class="ui-icon ui-icon-stop"></span>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<% }); %>
+		</tbody>
+	</table>
+</script>
 
 <script type="text/template" id="tmpl-stacktrace">
 	<table>
