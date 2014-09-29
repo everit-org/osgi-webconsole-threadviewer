@@ -14,7 +14,7 @@ $(document).ready(function() {
 		tagName : "tr",
 		className : "ui-state-default",
 		events : {
-			"click" : "onClick"
+			"click div.thread-name" : "onClick"
 		},
 		initialize : function(options) {
 			this.appModel = options.appModel;
@@ -22,7 +22,7 @@ $(document).ready(function() {
 		},
 		appModel : null,
 		onClick : function() {
-			this.appModel.set("selectedThread", this.model);
+			this.model.toggleSelected();
 		},
 		render : function() {
 			this.$el.empty();
