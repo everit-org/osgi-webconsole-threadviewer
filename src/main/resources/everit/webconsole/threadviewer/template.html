@@ -9,7 +9,7 @@
 	width: 100%
 }
 
-.tablesorter td.thread-name {
+.tablesorter td.thread-id {
 	padding-left: 10px
 }
 
@@ -27,7 +27,8 @@ table.stacktrace th {
 }
 
 table.stacktrace td {
-	padding: 3px 3px 3px 3px
+	padding: 3px 3px 3px 3px;
+	font-family: monospace;
 }
 </style>
 
@@ -43,6 +44,7 @@ table.stacktrace td {
 <div id="cnt-thread-list"></div>
 
 <script type="text/template" id="tmpl-thread-row">
+	<td class="thread-id"><%= thread.get("id") %></td>
 	<td class="thread-name">
 		<div class="thread-name"><%= thread.get("name") %></div>
 	</td>
@@ -60,6 +62,7 @@ table.stacktrace td {
 	<table class="tablesorter">
 		<thead>
 			<tr>
+				<th class="ui-widget-header header">Thread ID</th>
 				<th class="ui-widget-header header">Thread Name</th>
 				<th class="ui-widget-header header">State</th>
 				<th class="ui-widget-header header">Actions</th>
@@ -74,17 +77,13 @@ table.stacktrace td {
 	<table class="stacktrace">
 		<thead>
 			<tr>
-				<th>Class</th>
-				<th>Method</th>
-				<th>Line</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			<% _.each(stackTrace, function(entry) { %>
 			<tr>
-				<td><%= entry.className %></td>
-				<td><%= entry.methodName %></td>
-				<td><%= entry.lineNumber %></td>
+				<td><%= entry.description %></td>
 			</tr>
 			<% }); %>
 		</tbody>

@@ -14,15 +14,19 @@ $(document).ready(function() {
 		tagName : "tr",
 		className : "ui-state-default",
 		events : {
-			"click div.thread-name" : "onClick"
+			"click div.thread-name" : "toggleStackTrace",
+			"click .ui-icon-stop" : "interrupt"
 		},
 		initialize : function(options) {
 			this.appModel = options.appModel;
 			this.listenTo(this.model, "change", this.render);
 		},
 		appModel : null,
-		onClick : function() {
+		toggleStackTrace : function() {
 			this.model.toggleSelected();
+		},
+		interrupt: function() {
+			this.model.interrupt();
 		},
 		render : function() {
 			this.$el.empty();

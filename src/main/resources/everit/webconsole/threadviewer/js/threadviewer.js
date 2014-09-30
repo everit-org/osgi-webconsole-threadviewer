@@ -24,14 +24,7 @@ $(document).ready(function() {
 	
 	$("#cnt-thread-list").append(threadListView.render());
 	
-	$.getJSON(threadviewer.rootPath + "/listthreads", function(threadDefinitions) {
-		var newThreads = [];
-		for (var i in threadDefinitions) {
-			var threadDef = threadDefinitions[i];
-			newThreads.push(new threadviewer.Thread(threadDef));
-		}
-		threadList.reset(newThreads);
-	});
+	appModel.refreshThreadList();
 	
 })(window.threadviewer);
 });

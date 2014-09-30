@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,19 +85,14 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
             response.getWriter().println(loadTemplate("/everit/webconsole/threadviewer/template.html", templateVars));
         } else if (pathInfo.endsWith("listthreads")) {
             response.setHeader("Content-Type", "application/json");
-            Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
-            JSONWriter writer = new JSONWriter(response.getWriter());
-            writer.array();
-            for (Thread thread : stackTraces.keySet()) {
-                writer.object();
-                writer.key("name");
-                writer.value(thread.getName());
-                writer.key("state");
-                writer.value(thread.getState().toString());
-                writeStackTraceToJSON(writer, stackTraces.get(thread));
-                writer.endObject();
-            }
-            writer.endArray();
+            writeThreadsToJSON(Thread.getAllStackTraces(), new JSONWriter(response.getWriter()));
+        } else if (pathInfo.indexOf("interrupt") > -1) {
+            response.setHeader("Content-Type", "application/json");
+            long threadId = Long.parseLong(pathInfo.substring(pathInfo.lastIndexOf('/') + 1));
+            Thread.getAllStackTraces().keySet().stream()
+            .filter((thread) -> thread.getId() == threadId)
+            .findAny().ifPresent((thread) -> thread.interrupt());
+            writeThreadsToJSON(Thread.getAllStackTraces(), new JSONWriter(response.getWriter()));
         }
     }
 
@@ -117,6 +115,26 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
             writer.value(method.getMethodName());
             writer.key("lineNumber");
             writer.value(method.getLineNumber());
+            writer.key("description");
+            writer.value(method.toString());
+            writer.endObject();
+        }
+        writer.endArray();
+    }
+
+    private void writeThreadsToJSON(final Map<Thread, StackTraceElement[]> stackTraces, final JSONWriter writer) {
+        writer.array();
+        List<Thread> threads = new ArrayList<Thread>(stackTraces.keySet());
+        Collections.sort(threads, (t1, t2) -> (int) (t1.getId() - t2.getId()));
+        for (Thread thread : threads) {
+            writer.object();
+            writer.key("id");
+            writer.value(thread.getId());
+            writer.key("name");
+            writer.value(thread.getName());
+            writer.key("state");
+            writer.value(thread.getState().toString());
+            writeStackTraceToJSON(writer, stackTraces.get(thread));
             writer.endObject();
         }
         writer.endArray();
