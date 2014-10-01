@@ -24,6 +24,7 @@ $(document).ready(function() {
 		appModel : null,
 		toggleStackTrace : function() {
 			this.model.toggleSelected();
+			// this.appModel.updateNavigation();
 		},
 		interrupt: function() {
 			this.model.interrupt();

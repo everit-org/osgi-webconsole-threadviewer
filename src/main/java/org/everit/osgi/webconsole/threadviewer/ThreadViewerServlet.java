@@ -79,11 +79,13 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
             throws ServletException,
             IOException {
         String pathInfo = request.getPathInfo();
-        if (pathInfo.equals("/" + THREADS_LABEL)) {
+        if (pathInfo.indexOf("/" + THREADS_LABEL) > -1
+                && !(pathInfo.endsWith("css") || pathInfo.endsWith("js") || pathInfo.endsWith("map") || pathInfo
+                        .endsWith("json"))) {
             Map<String, String> templateVars = new HashMap<String, String>(1);
             templateVars.put("rootPath", request.getAttribute("felix.webconsole.pluginRoot").toString());
             response.getWriter().println(loadTemplate("/everit/webconsole/threadviewer/template.html", templateVars));
-        } else if (pathInfo.endsWith("listthreads")) {
+        } else if (pathInfo.endsWith("threadlist.json")) {
             response.setHeader("Content-Type", "application/json");
             writeThreadsToJSON(Thread.getAllStackTraces(), new JSONWriter(response.getWriter()));
         } else if (pathInfo.indexOf("interrupt") > -1) {

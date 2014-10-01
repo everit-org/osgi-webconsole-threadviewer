@@ -1,6 +1,12 @@
 $(document).ready(function() {
 (function(threadviewer) {
 	
+	var ThreadviewerRouter = Backbone.Router.extend({
+		routes: {
+			":threadIdList" : "displayThreads"
+		}
+	});
+	threadviewer.router = new ThreadviewerRouter();
 	
 	var threadList = new threadviewer.ThreadList();
 	
@@ -23,6 +29,11 @@ $(document).ready(function() {
 	});
 	
 	$("#cnt-thread-list").append(threadListView.render());
+	
+	Backbone.history.start({
+		pushState: true,
+		root: threadviewer.rootPath
+	});
 	
 	appModel.refreshThreadList();
 	
