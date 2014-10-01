@@ -28,6 +28,12 @@ $(document).ready(function() {
 		el: $("p.statline").get(0)
 	});
 	
+	var configView = new threadviewer.ConfigView({
+		model: appModel,
+		el: $("#cnt-config").get(0)
+	});
+	configView.render();
+	
 	$("#cnt-thread-list").append(threadListView.render());
 	
 	Backbone.history.start({

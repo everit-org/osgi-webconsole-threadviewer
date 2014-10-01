@@ -47,11 +47,12 @@ $(document).ready(function() {
 				self.set("threadStateSummary", "Summary: " + newThreadList.length + " threads");
 			});
 			threadviewer.router.on("route:displayThreads", function(e) {
-				var threadIdList = e.split(",");
+				var threadIdList = e.split("-");
 				self.set("openedStacktraces", threadIdList);
 			});
 		},
 		openedStacktraces: [],
+		allSelected: false,
 		updateThreadList : function(threadDefinitions) {
 			var self = this;
 			this.get("threadList").forEach(function(thread) {
@@ -78,12 +79,19 @@ $(document).ready(function() {
 			});
 			}
 		},
+		toggleAllSelected: function() {
+			var newAllOpened = !this.get("allSelected");
+			this.get("threadList").forEach(function(thread) {
+				thread.set("selected", newAllOpened);
+			});
+			this.set("allSelected", newAllOpened);
+		},
 		updateNavigation: function() {
 			var selectedThreadIds = [];
 			this.get("threadList").where({selected: true}).forEach(function (thread) {
 				selectedThreadIds.push(thread.get("id"));
 			});
-			threadviewer.router.navigate(selectedThreadIds.join(","), {replace: true});
+			threadviewer.router.navigate(selectedThreadIds.join("-"), {replace: true});
 		},
 		refreshThreadList: function() {
 			var self = this;

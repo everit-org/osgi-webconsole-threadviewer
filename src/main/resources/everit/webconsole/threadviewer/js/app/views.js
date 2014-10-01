@@ -24,7 +24,6 @@ $(document).ready(function() {
 		appModel : null,
 		toggleStackTrace : function() {
 			this.model.toggleSelected();
-			// this.appModel.updateNavigation();
 		},
 		interrupt: function() {
 			this.model.interrupt();
@@ -80,6 +79,22 @@ $(document).ready(function() {
 		},
 		render: function() {
 			this.$el.text(this.model.get("threadStateSummary"));
+		}
+	});
+	
+	threadviewer.ConfigView = Backbone.View.extend({
+		initialize: function() {
+			this.listenTo(this.model, "change:allSelected", this.render);
+		},
+		events: {
+			"click #btn-toggle-all-selected" : "toggleAllSelected"
+		},
+		toggleAllSelected: function() {
+			this.model.toggleAllSelected();
+		},
+		render: function() {
+			this.$el.find("#btn-toggle-all-selected").text(this.model.get("allSelected") ? "Hide All" : "Open All");
+			return this.$el;
 		}
 	});
 	

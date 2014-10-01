@@ -30,6 +30,11 @@ table.stacktrace td {
 	padding: 3px 3px 3px 3px;
 	font-family: monospace;
 }
+
+#cnt-config {
+	padding: 7px 7px 7px 7px;
+}
+
 </style>
 
 
@@ -40,6 +45,10 @@ table.stacktrace td {
 <script type="text/javascript" src="${rootPath}/threadviewer.js"></script>
 
 <p class="statline ui-state-highlight"></p>
+
+<div id="cnt-config" class="ui-widget-header ui-corner-top">
+	<button id="btn-toggle-all-selected" class="ui-state-default ui-corner-all">Open All</button>
+</div>
 
 <div id="cnt-thread-list"></div>
 
