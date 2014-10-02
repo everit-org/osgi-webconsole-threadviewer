@@ -1,6 +1,25 @@
 $(document).ready(function() {
 (function(threadviewer) {
 	
+	var ThreadStateFilterView = threadviewer.ThreadStateFilterView = Backbone.View.extend({
+		events: {
+			"click input[type=checkbox]" : "toggleSelected"
+		},
+		toggleSelected : function(e) {
+			var checkbox = e.currentTarget;
+			this.model.set(checkbox.value, checkbox.checked)
+		},
+		render : function() {
+			var $el = this.$el.empty();
+			threadviewer.ThreadState.states.forEach(function(state) {
+				var $span = $("<span><input type='checkbox' value='" + state + "' />" + state + "</span>");
+				$span.find("input").prop("checked", this.model.get(state));
+				$el.append($span);
+			}, this);
+			return this.$el;
+		}
+	});
+	
 	var StackTraceView = threadviewer.StackTraceView = Backbone.View.extend({
 		render : function() {
 			var table = _.template($("#tmpl-stacktrace").text())({
@@ -55,13 +74,12 @@ $(document).ready(function() {
 			var table = _.template($("#tmpl-thread-list").text())({});
 			var $table = $(table);
 			var $tbody = $table.find("tbody");
-			var self = this;
 			this.model.forEach(function(thread) {
 				$tbody.append(new ThreadView({
 					model: thread,
-					appModel: self.appModel
+					appModel: this.appModel
 				}).render());
-			});
+			}, this);
 			$table = $table.tablesorter();
 			var rows = $table.find("tr");
 			for (var idx in rows) {

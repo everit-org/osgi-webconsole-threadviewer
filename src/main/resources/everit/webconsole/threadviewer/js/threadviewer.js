@@ -1,5 +1,15 @@
 $(document).ready(function() {
 (function(threadviewer) {
+
+	var localStorage;
+	if (typeof(Storage) !== undefined) {
+		localStorage = threadviewer.localStorage = window.localStorage;
+	} else {
+		localStorage = threadviewer.localStorage = {
+			getItem : function() { return null; },
+			setItem: function(key, value) {}
+		}
+	}
 	
 	var ThreadviewerRouter = Backbone.Router.extend({
 		routes: {
@@ -8,14 +18,20 @@ $(document).ready(function() {
 	});
 	threadviewer.router = new ThreadviewerRouter();
 	
+	var threadStateFilter = new threadviewer.ThreadState();
+	
 	var threadList = new threadviewer.ThreadList();
 	
+	var filteredThreadList = new threadviewer.ThreadList();
+	
 	var appModel = new threadviewer.ApplicationModel({
-		threadList : threadList
+		threadList : threadList,
+		filteredThreadList : filteredThreadList,  
+		threadStateFilter : threadStateFilter
 	});
 	
 	var threadListView = new threadviewer.ThreadListView({
-		model : threadList,
+		model : filteredThreadList,
 		appModel : appModel
 	});
 	
@@ -33,6 +49,13 @@ $(document).ready(function() {
 		el: $("#cnt-config").get(0)
 	});
 	configView.render();
+	
+	var threadStateFilterView = new threadviewer.ThreadStateFilterView({
+		model: threadStateFilter,
+		el: $("#cnt-thread-state-filter").get(0) 
+	});
+	threadStateFilterView.render();
+	
 	
 	$("#cnt-thread-list").append(threadListView.render());
 	

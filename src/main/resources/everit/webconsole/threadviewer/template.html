@@ -35,6 +35,15 @@ table.stacktrace td {
 	padding: 7px 7px 7px 7px;
 }
 
+#cnt-thread-state-filter {
+	display: inline-block;
+	float: right
+}
+
+#cnt-thread-state-filter span {
+	padding-right: 20px
+}
+
 </style>
 
 
@@ -48,6 +57,8 @@ table.stacktrace td {
 
 <div id="cnt-config" class="ui-widget-header ui-corner-top">
 	<button id="btn-toggle-all-selected" class="ui-state-default ui-corner-all">Open All</button>
+	
+	<div id="cnt-thread-state-filter"></div>
 </div>
 
 <div id="cnt-thread-list"></div>
