@@ -47,8 +47,12 @@ $(document).ready(function() {
 				self.set("threadStateSummary", "Summary: " + newThreadList.length + " threads");
 			});
 			threadviewer.router.on("route:displayThreads", function(e) {
-				var threadIdList = e.split("-");
-				self.set("openedStacktraces", threadIdList);
+				if (e === "all") {
+					self.setAllSelected(true);
+				} else {
+					var threadIdList = e.split("-");
+					self.set("openedStacktraces", threadIdList);
+				}
 			});
 		},
 		openedStacktraces: [],
@@ -67,31 +71,47 @@ $(document).ready(function() {
 				newThreads.push(newThread);
 			}
 			this.get("threadList").reset(newThreads);
-			var opened = this.get("openedStacktraces");
-			if (opened !== undefined) {
-			opened.forEach(function(threadId) {
-				var thread = self.get("threadList").findWhere({
-					id : parseInt(threadId, 10)
-				});
-				if (thread !== undefined) {
+			if (this.get("allSelected")) {
+				var newOpenedStacktraces = [];
+				this.get("threadList").forEach(function(thread) {
 					thread.set("selected", true);
+					newOpenedStacktraces.push(thread.get("id"));
+				});
+				this.set("openedStacktraces", newOpenedStacktraces);
+			} else {
+				var opened = this.get("openedStacktraces");
+				if (opened !== undefined) {
+					opened.forEach(function(threadId) {
+						var thread = self.get("threadList").findWhere({
+							id : parseInt(threadId, 10)
+						});
+						if (thread !== undefined) {
+							thread.set("selected", true);
+						}
+					});
 				}
-			});
 			}
 		},
-		toggleAllSelected: function() {
-			var newAllOpened = !this.get("allSelected");
+		setAllSelected : function(selected) {
 			this.get("threadList").forEach(function(thread) {
-				thread.set("selected", newAllOpened);
+				thread.set("selected", selected);
 			});
-			this.set("allSelected", newAllOpened);
+			this.set("allSelected", selected);
+		},
+		toggleAllSelected: function() {
+			this.setAllSelected(!this.get("allSelected"));
 		},
 		updateNavigation: function() {
-			var selectedThreadIds = [];
-			this.get("threadList").where({selected: true}).forEach(function (thread) {
-				selectedThreadIds.push(thread.get("id"));
-			});
-			threadviewer.router.navigate(selectedThreadIds.join("-"), {replace: true});
+			var selectedThreads = this.get("threadList").where({selected: true});
+			if (selectedThreads.length === this.get("threadList").length) {
+				threadviewer.router.navigate("all", {replace: true});
+			} else {
+				var selectedThreadIds = [];
+				selectedThreads.forEach(function (thread) {
+					selectedThreadIds.push(thread.get("id"));
+				});
+				threadviewer.router.navigate(selectedThreadIds.join("-"), {replace: true});
+			}
 		},
 		refreshThreadList: function() {
 			var self = this;
