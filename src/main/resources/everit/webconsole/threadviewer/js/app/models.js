@@ -75,7 +75,6 @@ $(document).ready(function() {
 			options.filteredThreadList.on("reset", this.updateSummary, this);
 			threadviewer.router.on("route:displayThreads", function(e) {
 				e = e || "";
-				console.log(e)
 				if (e === "all") {
 					this.setAllSelected(true);
 				} else {
