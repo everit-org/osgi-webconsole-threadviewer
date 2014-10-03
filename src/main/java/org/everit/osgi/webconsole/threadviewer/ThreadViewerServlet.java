@@ -1,3 +1,19 @@
+/**
+ * This file is part of Everit - Felix Webconsole Thread Viewer.
+ *
+ * Everit - Felix Webconsole Thread Viewer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Everit - Felix Webconsole Thread Viewer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Everit - Felix Webconsole Thread Viewer.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.everit.osgi.webconsole.threadviewer;
 
 import java.io.BufferedReader;
@@ -31,6 +47,8 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
             "app/views.js",
             "threadviewer.js",
             "backbone.js",
+            "backbone.queryparams.min.js",
+            "backbone.queryparams-1.1-shim.js",
             "underscore-min.js"
             ));
 
@@ -59,8 +77,7 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
     }
 
     private String loadTemplate(final String path, final Map<String, String> templateVars) {
-        try {
-            InputStream inputStream = getResourceProvider().getClass().getResourceAsStream(path);
+        try (InputStream inputStream = getResourceProvider().getClass().getResourceAsStream(path)) {
             BufferedReader buffInputStream = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             StringBuilder buffer = new StringBuilder();
@@ -92,8 +109,8 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
             response.setHeader("Content-Type", "application/json");
             long threadId = Long.parseLong(pathInfo.substring(pathInfo.lastIndexOf('/') + 1));
             Thread.getAllStackTraces().keySet().stream()
-            .filter((thread) -> thread.getId() == threadId)
-            .findAny().ifPresent((thread) -> thread.interrupt());
+                    .filter((thread) -> thread.getId() == threadId)
+                    .findAny().ifPresent((thread) -> thread.interrupt());
             writeThreadsToJSON(Thread.getAllStackTraces(), new JSONWriter(response.getWriter()));
         }
     }
