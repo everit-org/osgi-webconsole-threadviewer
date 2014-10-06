@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of Everit - Felix Webconsole Thread Viewer.
+
+    Everit - Felix Webconsole Thread Viewer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Everit - Felix Webconsole Thread Viewer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with Everit - Felix Webconsole Thread Viewer.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.everit.config</groupId>
+    <artifactId>org.everit.config.oss</artifactId>
+    <version>5.0.2</version>
+  </parent>
+
+  <groupId>org.everit.osgi</groupId>
+  <artifactId>org.everit.osgi.webconsole.threadviewer</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+
+  <packaging>bundle</packaging>
+  <name>Everit - Felix Webconsole Thread Viewer</name>
+
+  <properties>
+    <source.dist.folder>${basedir}/src/dist/</source.dist.folder>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.5.3</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Activator>org.everit.osgi.webconsole.threadviewer.ThreadViewerActivator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.everit.osgi.dev</groupId>
+        <artifactId>eosgi-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <sourceDistPath>${source.dist.folder}</sourceDistPath>
+          <jacoco>
+            <includes>org.everit.osgi.ecm.component.*</includes>
+            <output>$${ if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "file"; else "tcpserver"; }</output>
+          </jacoco>
+          <environments>
+            <environment>
+              <id>ecmFelix</id>
+              <framework>felix</framework>
+              <systemProperties>
+                <felix.cm.dir>${wrapper_home}/../conf/configadmin</felix.cm.dir>
+              </systemProperties>
+              <vmOptions>
+                <vmOption>-Xdebug</vmOption>
+                <vmOption>-Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n</vmOption>
+              </vmOptions>
+            </environment>
+          </environments>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.org.json</artifactId>
+      <version>1.0.0-v20140107</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>4.3.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.everit.osgi.dev</groupId>
+      <artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
+      <version>3.0.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.metatype</artifactId>
+      <version>1.0.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.everit.osgi.dev</groupId>
+      <artifactId>org.everit.osgi.dev.richconsole</artifactId>
+      <version>1.2.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.eventadmin</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.configadmin</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <version>4.3.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Jetty with Http Service -->
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.http.jetty</artifactId>
+      <version>2.3.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty.orbit</groupId>
+          <artifactId>javax.servlet</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.http.servlet-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <!-- Felix webconsole with dependencies -->
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.webconsole</artifactId>
+      <version>4.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.3</version>
+    </dependency>
+
+  </dependencies>
+</project>
