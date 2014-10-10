@@ -51,6 +51,11 @@
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.everit.osgi.webconsole.threadviewer.ThreadViewerActivator</Bundle-Activator>
+			<Import-Package>
+			  javax.servlet.*;version="[2.4,4)",
+			  *
+			</Import-Package>
+			<Export-Package />
           </instructions>
         </configuration>
       </plugin>
