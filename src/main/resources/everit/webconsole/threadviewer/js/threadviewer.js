@@ -17,11 +17,10 @@
 $(document).ready(function() {
 (function(threadviewer) {
 
-	var localStorage;
 	if (typeof(Storage) !== undefined) {
-		localStorage = threadviewer.localStorage = window.localStorage;
+		threadviewer.localStorage = window.localStorage;
 	} else {
-		localStorage = threadviewer.localStorage = {
+		threadviewer.localStorage = {
 			getItem : function() { return null; },
 			setItem: function(key, value) {}
 		}
@@ -51,26 +50,20 @@ $(document).ready(function() {
 		appModel : appModel
 	});
 	
-	var stackTraceView = new threadviewer.StackTraceView({
-		appModel : appModel
-	});
-	
-	var summaryView = new threadviewer.SummaryView({
+	new threadviewer.SummaryView({
 		model: appModel,
 		el: $("p.statline").get(0)
 	});
 	
-	var configView = new threadviewer.ConfigView({
+	new threadviewer.ConfigView({
 		model: appModel,
-		el: $("#cnt-config").get(0)
-	});
-	configView.render();
+		el: document.getElementById("cnt-config")
+	}).render();
 	
-	var threadStateFilterView = new threadviewer.ThreadStateFilterView({
+	new threadviewer.ThreadStateFilterView({
 		model: threadStateFilter,
-		el: $("#cnt-thread-state-filter").get(0) 
-	});
-	threadStateFilterView.render();
+		el: document.getElementById("cnt-thread-state-filter") 
+	}).render();
 	
 	
 	$("#cnt-thread-list").append(threadListView.render());
