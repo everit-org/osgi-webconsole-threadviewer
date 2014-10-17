@@ -53,6 +53,11 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
             ));
 
     @Override
+    public String getCategory() {
+        return "Everit";
+    }
+
+    @Override
     public String getLabel() {
         return THREADS_LABEL;
     }
@@ -60,7 +65,7 @@ public class ThreadViewerServlet extends AbstractWebConsolePlugin {
     public URL getResource(final String path) {
         for (String jsFile : loadableJavascriptFiles) {
             if (path.endsWith(jsFile)) {
-                return getResourceProvider().getClass().getResource("/everit/webconsole/threadviewer/js/" + jsFile);
+                return ThreadViewerServlet.class.getResource("/everit/webconsole/threadviewer/js/" + jsFile);
             }
         }
         return null;
