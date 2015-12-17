@@ -40,7 +40,7 @@
 
   <div class="ui-state-default" data-eht-foreach="['thread' : threads]" data-eht-attr-id="thread.getId()"
     data-eht-attr-style="'margin-bottom:10px;background:#EDEDED;'"><!--
-    --><a data-eht-attr-href="pluginRoot + '/' + thread.getId()" 
+    --><a data-eht-attr-href="pluginRoot + '/' + thread.getId()"
           data-eht-code="var isDaemon = ''; if(thread.isDaemon()){isDaemon = ' daemon';}"
           data-eht-text="thread.getId() +' - '+ thread.getName() + isDaemon + ' prio=' + thread.getPriority() + ' in ' + thread.getState()"
           style="font-family:monospace">&nbsp;</a><!--
@@ -50,12 +50,12 @@
   --></div>
 
   <script type="text/javascript">
-			$(document).ready(function() {
-				$("#thread_table").tablesorter({
-					sortList : [ [ 0, 0 ] ]
-				});
-			});
-	</script>
+    $(document).ready(function() {
+      $("#thread_table").tablesorter({
+        sortList : [ [ 0, 0 ] ]
+      });
+    });
+  </script>
 </div>
 
 <div data-eht-fragment="'threadDetails'" data-eht-render="'content'">
