@@ -29,7 +29,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="ui-state-default" data-eht-foreach="['thread' : threads]">
+      <tr class="ui-state-default" data-eht-foreach="{'thread' : threads}">
         <td><span data-eht-text="thread.getId()">1</span></td>
         <td><a data-eht-attr-href="'#' + thread.getId()" data-eht-text="thread.getName()">Thread-1</a></td>
         <td><span data-eht-text="thread.getPriority()">1</span></td>
@@ -38,13 +38,13 @@
     </tbody>
   </table>
 
-  <div class="ui-state-default" data-eht-foreach="['thread' : threads]" data-eht-attr-id="thread.getId()"
+  <div class="ui-state-default" data-eht-foreach="{'thread' : threads}" data-eht-attr-id="thread.getId()"
     data-eht-attr-style="'margin-bottom:10px;background:#EDEDED;'"><!--
     --><a data-eht-attr-href="pluginRoot + '/' + thread.getId()"
-          data-eht-code="var isDaemon = ''; if(thread.isDaemon()){isDaemon = ' daemon';}"
+          data-eht-code="isDaemon = ''; if(thread.isDaemon()){isDaemon = ' daemon';}"
           data-eht-text="thread.getId() +' - '+ thread.getName() + isDaemon + ' prio=' + thread.getPriority() + ' in ' + thread.getState()"
           style="font-family:monospace">&nbsp;</a><!--
-  --><div data-eht-foreach="['sT' : thread.getStackTrace()]" style="padding-left: 30px; background: #FFFFFF;">
+  --><div data-eht-foreach="{'sT' : thread.getStackTrace()}" style="padding-left: 30px; background: #FFFFFF;">
       <pre data-eht-text="'  at ' + sT.toString()">Thread Dump</pre>
      </div><!--
   --></div>
@@ -62,15 +62,14 @@
   <div class="ui-state-default" data-eht-attr-id="thread.getId()" style="margin-top: 10px;">
     <div id="description" style="display: inline-flex;background: #EDEDED;">
       <a class="ui-icon ui-icon-triangle-1-w" title="Back" data-eht-attr-href="pluginRoot + '#' + thread.getId()">&nbsp;</a>
-      <pre data-eht-code="var isDaemon = ''; if(thread.isDaemon()){isDaemon = ' daemon';}"
+      <pre data-eht-code="isDaemon = ''; if(thread.isDaemon()){isDaemon = ' daemon';}"
         data-eht-text="thread.getId() +' - '+ thread.getName() + isDaemon + ' prio=' + thread.getPriority() + ' in ' + thread.getState()"
         style="padding: 2px;">Thread description</pre>
     </div><!--
     --><div id="dump" style="padding-left: 30px; background: #FFFFFF;">
-          <div data-eht-foreach="['sT' : thread.getStackTrace()]">
+          <div data-eht-foreach="{'sT' : thread.getStackTrace()}">
             <pre data-eht-text="'  at ' + sT.toString()">Thread Dump</pre>
           </div>
        </div>
   </div>
 </div>
-
