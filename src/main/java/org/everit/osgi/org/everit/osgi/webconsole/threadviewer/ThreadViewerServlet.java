@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.everit.expression.ExpressionCompiler;
 import org.everit.expression.ParserConfiguration;
-import org.everit.expression.mvel.MvelExpressionCompiler;
+import org.everit.expression.jexl.JexlExpressionCompiler;
 import org.everit.templating.CompiledTemplate;
 import org.everit.templating.TemplateCompiler;
 import org.everit.templating.html.HTMLTemplateCompiler;
@@ -83,7 +83,7 @@ public class ThreadViewerServlet implements Servlet {
   public ThreadViewerServlet(final BundleContext bundleContext) {
     classLoader = bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader();
 
-    ExpressionCompiler expressionCompiler = new MvelExpressionCompiler();
+    ExpressionCompiler expressionCompiler = new JexlExpressionCompiler();
 
     TextTemplateCompiler textTemplateCompiler = new TextTemplateCompiler(expressionCompiler);
 
@@ -112,7 +112,7 @@ public class ThreadViewerServlet implements Servlet {
   private Thread findThreadWithId(final long threadId) {
     List<Thread> threads = getThreads();
     Thread result = null;
-    for (Iterator<Thread> iterator = threads.iterator(); iterator.hasNext() && result == null;) {
+    for (Iterator<Thread> iterator = threads.iterator(); iterator.hasNext() && (result == null);) {
       Thread thread = iterator.next();
       if (thread.getId() == threadId) {
         result = thread;
@@ -139,7 +139,7 @@ public class ThreadViewerServlet implements Servlet {
 
   @Override
   public void init(final ServletConfig pConfig) throws ServletException {
-    this.config = pConfig;
+    config = pConfig;
 
   }
 
