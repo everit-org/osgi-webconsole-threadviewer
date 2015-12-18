@@ -112,7 +112,7 @@ public class ThreadViewerServlet implements Servlet {
   private Thread findThreadWithId(final long threadId) {
     List<Thread> threads = getThreads();
     Thread result = null;
-    for (Iterator<Thread> iterator = threads.iterator(); iterator.hasNext() && (result == null);) {
+    for (Iterator<Thread> iterator = threads.iterator(); iterator.hasNext() && result == null;) {
       Thread thread = iterator.next();
       if (thread.getId() == threadId) {
         result = thread;
@@ -139,7 +139,7 @@ public class ThreadViewerServlet implements Servlet {
 
   @Override
   public void init(final ServletConfig pConfig) throws ServletException {
-    config = pConfig;
+    this.config = pConfig;
 
   }
 
