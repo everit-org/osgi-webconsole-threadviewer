@@ -18,12 +18,12 @@
   <parent>
     <groupId>org.everit.config</groupId>
     <artifactId>org.everit.config.oss</artifactId>
-    <version>6.0.3</version>
+    <version>7.2.0</version>
   </parent>
 
   <groupId>org.everit.osgi</groupId>
   <artifactId>org.everit.osgi.webconsole.threadviewer</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.1.0</version>
   <packaging>bundle</packaging>
 
   <name>Everit - Threadviewer</name>
@@ -111,17 +111,17 @@
     <dependency>
       <groupId>org.everit.expression</groupId>
       <artifactId>org.everit.expression.jexl</artifactId>
-      <version>1.0.0</version>
+      <version>2.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.everit.templating</groupId>
       <artifactId>org.everit.templating.text</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.everit.templating</groupId>
       <artifactId>org.everit.templating.html</artifactId>
-      <version>1.1.2</version>
+      <version>1.2.0</version>
     </dependency>
   </dependencies>
 </project>
